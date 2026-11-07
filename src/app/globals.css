@@ -1,0 +1,763 @@
+@import "tailwindcss";
+
+:root {
+  --font-cairo: "Cairo", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+
+  /* =========================================================
+     Unified Design System — 5 Auxiliary Colors (~30% usage)
+     Applied to secondary elements only; brand #947AB6 stays
+     the dominant (~70%) color. Values below are the dark-mode
+     tuned set; html.light overrides them for AA contrast.
+     ========================================================= */
+  --aux-teal: #5fb7b0;
+  --aux-teal-rgb: 95 183 176;
+  --aux-amber: #e2a86b;
+  --aux-amber-rgb: 226 168 107;
+  --aux-blue: #6fa3d8;
+  --aux-blue-rgb: 111 163 216;
+  --aux-rose: #d98ba4;
+  --aux-rose-rgb: 217 139 164;
+  --aux-green: #7bc492;
+  --aux-green-rgb: 123 196 146;
+}
+
+html.light {
+  --aux-teal: #3f9b94;
+  --aux-teal-rgb: 63 155 148;
+  --aux-amber: #c9873f;
+  --aux-amber-rgb: 201 135 63;
+  --aux-blue: #4c7fb8;
+  --aux-blue-rgb: 76 127 184;
+  --aux-rose: #b85c79;
+  --aux-rose-rgb: 184 92 121;
+  --aux-green: #4f9d6b;
+  --aux-green-rgb: 79 157 107;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: "Cairo", "Poppins", sans-serif;
+    background-color: #12171d;
+    color: #f5f3fa;
+  }
+
+  html[lang="en"] {
+    font-family: "Poppins", "Cairo", sans-serif;
+  }
+
+  html.light {
+    background-color: #f8f7fc;
+    color: #12171d;
+  }
+
+  body {
+    overflow-x: clip;
+  }
+}
+
+.font-poppins {
+  font-family: var(--font-poppins), sans-serif;
+}
+
+.font-cairo {
+  font-family: var(--font-cairo), sans-serif;
+}
+
+/* Hide default system cursor on desktop fine-pointer devices in favor of
+   CustomCursor. Gated behind prefers-reduced-motion: users who opt out of
+   motion get NO custom cursor component, so the native cursor must stay. */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html.has-custom-cursor,
+  html.has-custom-cursor body,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button,
+  html.has-custom-cursor [role="button"],
+  html.has-custom-cursor input,
+  html.has-custom-cursor textarea,
+  html.has-custom-cursor select,
+  html.has-custom-cursor label[for],
+  html.has-custom-cursor [data-cursor="interactive"] {
+    cursor: none !important;
+  }
+}
+
+/* Consistent, always-visible keyboard focus indicator (WCAG 2.4.7 / 2.4.11). */
+@layer base {
+  :focus-visible {
+    outline: 2px solid #947ab6;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* =========================================================
+   Section 06: 25-Zone 3D Perspective Tilt + Sibling Focus
+   ========================================================= */
+.why-tilt-container {
+  position: relative;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  user-select: none;
+}
+
+.why-tilt-container:active {
+  transform: scale(0.985);
+}
+
+.why-tilt-canvas {
+  perspective: 800px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-template-areas:
+    "tr-1 tr-2 tr-3 tr-4 tr-5"
+    "tr-6 tr-7 tr-8 tr-9 tr-10"
+    "tr-11 tr-12 tr-13 tr-14 tr-15"
+    "tr-16 tr-17 tr-18 tr-19 tr-20"
+    "tr-21 tr-22 tr-23 tr-24 tr-25";
+}
+
+.why-tilt-card {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 280ms ease,
+    box-shadow 280ms ease;
+  transform-style: preserve-3d;
+}
+
+.why-tilt-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(148, 122, 182, 0.24),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 280ms ease;
+  pointer-events: none;
+}
+
+.why-tilt-container:hover .why-tilt-card {
+  border-color: rgba(148, 122, 182, 0.85);
+  box-shadow: 0 24px 54px -14px rgba(148, 122, 182, 0.35);
+}
+
+.why-tilt-container:hover .why-tilt-card::before {
+  opacity: 1;
+}
+
+.why-tilt-container:hover .why-tilt-bar {
+  width: 4.5rem;
+  background-color: #947ab6;
+}
+
+.why-tilt-tracker {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+}
+
+.tr-1 { grid-area: tr-1; }
+.tr-2 { grid-area: tr-2; }
+.tr-3 { grid-area: tr-3; }
+.tr-4 { grid-area: tr-4; }
+.tr-5 { grid-area: tr-5; }
+.tr-6 { grid-area: tr-6; }
+.tr-7 { grid-area: tr-7; }
+.tr-8 { grid-area: tr-8; }
+.tr-9 { grid-area: tr-9; }
+.tr-10 { grid-area: tr-10; }
+.tr-11 { grid-area: tr-11; }
+.tr-12 { grid-area: tr-12; }
+.tr-13 { grid-area: tr-13; }
+.tr-14 { grid-area: tr-14; }
+.tr-15 { grid-area: tr-15; }
+.tr-16 { grid-area: tr-16; }
+.tr-17 { grid-area: tr-17; }
+.tr-18 { grid-area: tr-18; }
+.tr-19 { grid-area: tr-19; }
+.tr-20 { grid-area: tr-20; }
+.tr-21 { grid-area: tr-21; }
+.tr-22 { grid-area: tr-22; }
+.tr-23 { grid-area: tr-23; }
+.tr-24 { grid-area: tr-24; }
+.tr-25 { grid-area: tr-25; }
+
+.tr-1:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(15deg) rotateY(-9deg); }
+.tr-2:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(15deg) rotateY(-4.5deg); }
+.tr-3:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(15deg) rotateY(0deg); }
+.tr-4:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(15deg) rotateY(4.5deg); }
+.tr-5:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(15deg) rotateY(9deg); }
+
+.tr-6:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(7.5deg) rotateY(-9deg); }
+.tr-7:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(7.5deg) rotateY(-4.5deg); }
+.tr-8:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(7.5deg) rotateY(0deg); }
+.tr-9:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(7.5deg) rotateY(4.5deg); }
+.tr-10:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(7.5deg) rotateY(9deg); }
+
+.tr-11:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(0deg) rotateY(-9deg); }
+.tr-12:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(0deg) rotateY(-4.5deg); }
+.tr-13:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(0deg) rotateY(0deg); }
+.tr-14:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(0deg) rotateY(4.5deg); }
+.tr-15:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(0deg) rotateY(9deg); }
+
+.tr-16:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-7.5deg) rotateY(-9deg); }
+.tr-17:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-7.5deg) rotateY(-4.5deg); }
+.tr-18:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-7.5deg) rotateY(0deg); }
+.tr-19:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-7.5deg) rotateY(4.5deg); }
+.tr-20:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-7.5deg) rotateY(9deg); }
+
+.tr-21:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-15deg) rotateY(-9deg); }
+.tr-22:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-15deg) rotateY(-4.5deg); }
+.tr-23:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-15deg) rotateY(0deg); }
+.tr-24:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-15deg) rotateY(4.5deg); }
+.tr-25:hover ~ .why-tilt-card { transition: 140ms ease-out; transform: rotateX(-15deg) rotateY(9deg); }
+
+/* Sibling Focus Blur/Glow on desktop hover */
+@media (hover: hover) {
+  .why-cards-grid:hover > .why-tilt-container:not(:hover) {
+    filter: blur(2.5px);
+    opacity: 0.7;
+    transform: scale(0.97);
+  }
+}
+
+/* =========================================================
+   Section 13: Isometric 3D Layered Brand Social Icons
+   ========================================================= */
+.iso-social-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.iso-pro {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  transition: 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.iso-link {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 9999px;
+  color: #947ab6;
+  background: rgba(148, 122, 182, 0.12);
+  border: 1px solid rgba(148, 122, 182, 0.35);
+  box-shadow: inset 0 0 14px rgba(148, 122, 182, 0.18),
+    0 6px 14px rgba(0, 0, 0, 0.16);
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.iso-svg {
+  width: 21px;
+  height: 21px;
+}
+
+.iso-ring {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 9999px;
+  border: 1.5px solid #947ab6;
+  box-shadow: inset 0 0 14px rgba(148, 122, 182, 0.3),
+    0 5px 12px rgba(148, 122, 182, 0.22);
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.iso-text {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px) skewX(-6deg);
+  border-radius: 8px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  color: #ffffff;
+  background-color: #947ab6;
+  box-shadow: 0 8px 20px -4px rgba(148, 122, 182, 0.6);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 30;
+}
+
+.iso-pro:hover .iso-link {
+  transform: translate(10px, -10px);
+  background: #947ab6;
+  color: #ffffff;
+  border-color: #c4b0dc;
+  box-shadow: 0 12px 24px -6px rgba(148, 122, 182, 0.55);
+}
+
+.iso-pro:hover .iso-text {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px) skewX(-6deg);
+}
+
+.iso-pro:hover .iso-ring:nth-child(1) {
+  opacity: 0.25;
+  transform: translate(0px, 0px);
+}
+
+.iso-pro:hover .iso-ring:nth-child(2) {
+  opacity: 0.5;
+  transform: translate(4px, -4px);
+}
+
+.iso-pro:hover .iso-ring:nth-child(3) {
+  opacity: 0.75;
+  transform: translate(8px, -8px);
+}
+
+/* =========================================================
+   Hero Backdrop — Very Light Grid (from moaven-landing-page-prototype2,
+   refined per user spec: lighter lines, calmer rhythm, wider radial
+   mask so the grid reads softly across the whole hero).
+   ========================================================= */
+.grid-noise {
+  background-image: linear-gradient(to right, rgba(148, 122, 182, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 122, 182, 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 75% 68% at 50% 0%, #000 25%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 68% at 50% 0%, #000 25%, transparent 100%);
+}
+
+html.light .grid-noise {
+  background-image: linear-gradient(to right, rgba(148, 122, 182, 0.085) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 122, 182, 0.085) 1px, transparent 1px);
+}
+
+/* =========================================================
+   Hero Modern Light Glow — a soft top-center light beam with two
+   faint auxiliary-color accents (teal / amber, ~30% usage rule).
+   Pure CSS, opacity-only breathing animation (GPU-cheap) and
+   fully disabled by prefers-reduced-motion.
+   ========================================================= */
+.hero-light {
+  background:
+    radial-gradient(ellipse 55% 42% at 50% -6%, rgba(148, 122, 182, 0.22), transparent 68%),
+    radial-gradient(ellipse 26% 20% at 14% 10%, rgb(var(--aux-teal-rgb) / 0.07), transparent 70%),
+    radial-gradient(ellipse 26% 20% at 86% 10%, rgb(var(--aux-amber-rgb) / 0.07), transparent 70%);
+  animation: heroLightBreath 9s ease-in-out infinite alternate;
+}
+
+html.light .hero-light {
+  background:
+    radial-gradient(ellipse 55% 42% at 50% -6%, rgba(148, 122, 182, 0.17), transparent 68%),
+    radial-gradient(ellipse 26% 20% at 14% 10%, rgb(var(--aux-teal-rgb) / 0.09), transparent 70%),
+    radial-gradient(ellipse 26% 20% at 86% 10%, rgb(var(--aux-amber-rgb) / 0.09), transparent 70%);
+}
+
+@keyframes heroLightBreath {
+  from { opacity: 0.72; }
+  to { opacity: 1; }
+}
+
+/* Glass surface (Contact form — prototype2 formatting, unified tokens) */
+.glass {
+  background: rgba(22, 29, 38, 0.72);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(148, 122, 182, 0.28);
+}
+
+html.light .glass {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(148, 122, 182, 0.3);
+}
+
+/* =========================================================
+   Button Bubble Hover Effect (adapted from Uiverse — zjssun)
+   Applied project-wide to ALL buttons with brand #947AB6.
+
+   CRITICAL (user spec — modal padding & close-button placement):
+   these base rules live inside @layer base so Tailwind utilities
+   (e.g. `absolute` on DialogClose) keep winning the cascade.
+   Previously the unlayered `button { position: relative }` rule
+   overrode `.absolute` (unlayered CSS beats @layer utilities in
+   Tailwind v4), which pushed the close button INTO the modal flow
+   and inflated the top padding — fixed by moving it into the base
+   layer. Visual output is pixel-identical; specificity is sane.
+   ========================================================= */
+@layer base {
+  button,
+  .btn-bubbles {
+    position: relative;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease,
+      color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  }
+
+  button:active,
+  .btn-bubbles:active {
+    transform: scale(0.96);
+  }
+
+  button::before,
+  button::after,
+  .btn-bubbles::before,
+  .btn-bubbles::after {
+    position: absolute;
+    content: "";
+    width: 150%;
+    left: 50%;
+    height: 100%;
+    transform: translateX(-50%);
+    z-index: -1000;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+}
+
+button:hover::before,
+.btn-bubbles:hover::before {
+  top: -70%;
+  background-image: radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, transparent 20%, #947ab6 20%, transparent 30%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, #947ab6 15%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%);
+  background-size: 10% 10%, 20% 20%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%,
+    10% 10%, 18% 18%;
+  background-position: 50% 120%;
+  animation: greentopBubbles 0.6s ease;
+}
+
+button:hover::after,
+.btn-bubbles:hover::after {
+  bottom: -70%;
+  background-image: radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, transparent 10%, #947ab6 15%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%),
+    radial-gradient(circle, #947ab6 20%, transparent 20%);
+  background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 20% 20%, 18% 18%;
+  background-position: 50% 0%;
+  animation: greenbottomBubbles 0.6s ease;
+}
+
+@keyframes greentopBubbles {
+  0% {
+    background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%,
+      40% 90%, 55% 90%, 70% 90%;
+  }
+  50% {
+    background-position: 0% 80%, 0% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 50%,
+      50% 50%, 65% 20%, 90% 30%;
+  }
+  100% {
+    background-position: 0% 70%, 0% 10%, 10% 30%, 20% -10%, 30% 20%, 22% 40%,
+      50% 40%, 65% 10%, 90% 20%;
+    background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+  }
+}
+
+@keyframes greenbottomBubbles {
+  0% {
+    background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%,
+      70% -10%, 70% 0%;
+  }
+  50% {
+    background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%,
+      105% 0%;
+  }
+  100% {
+    background-position: 0% 90%, 20% 90%, 45% 70%, 60% 110%, 75% 80%, 95% 70%,
+      110% 10%;
+    background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+  }
+}
+
+/* =========================================================
+   4-Zone 3D Tilt Card (adapted from Uiverse — dylanharriscameron)
+   Pure CSS: hovering a quadrant tilts the card toward it.
+   Used by the Audience tab step cards.
+   ========================================================= */
+.tilt3d {
+  perspective: 1000px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.tilt3d-zone {
+  opacity: 0;
+  position: absolute;
+  z-index: 1;
+  width: 50%;
+  height: 50%;
+}
+
+.tilt3d-zone:nth-child(1) { top: 0; left: 0; }
+.tilt3d-zone:nth-child(2) { top: 0; right: 0; }
+.tilt3d-zone:nth-child(3) { bottom: 0; right: 0; }
+.tilt3d-zone:nth-child(4) { bottom: 0; left: 0; }
+
+/* Hovering a step card lifts it (and its floating shadow) ABOVE the
+   neighboring cards — the effect stays free, never clipped or trapped
+   under the cards below (user spec). */
+.tilt3d:hover {
+  z-index: 50;
+}
+
+.tilt3d-card {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform 300ms ease-out, box-shadow 300ms ease-out,
+    border-color 300ms ease-out;
+  transform-origin: center center;
+}
+
+.tilt3d-zone:nth-child(1):hover ~ .tilt3d-card {
+  transform-origin: right bottom;
+  transform: rotateX(10deg) rotateY(-10deg) translateZ(0);
+  box-shadow: 10px 20px 0 -6px rgba(148, 122, 182, 0.35);
+}
+.tilt3d-zone:nth-child(2):hover ~ .tilt3d-card {
+  transform-origin: left bottom;
+  transform: rotateX(10deg) rotateY(10deg) translateZ(0);
+  box-shadow: -10px 20px 0 -6px rgba(148, 122, 182, 0.35);
+}
+.tilt3d-zone:nth-child(3):hover ~ .tilt3d-card {
+  transform-origin: left top;
+  transform: rotateX(-10deg) rotateY(10deg) translateZ(0);
+  box-shadow: -10px -20px 0 -6px rgba(148, 122, 182, 0.35);
+}
+.tilt3d-zone:nth-child(4):hover ~ .tilt3d-card {
+  transform-origin: right top;
+  transform: rotateX(-10deg) rotateY(-10deg) translateZ(0);
+  box-shadow: 10px -20px 0 -6px rgba(148, 122, 182, 0.35);
+}
+
+/* =========================================================
+   Terminal Typing Sketch (adapted from Uiverse — drewsephski)
+   Pure CSS closed loop: types the command, holds, erases,
+   then retypes — continuously.
+   ========================================================= */
+.term {
+  display: flex;
+  flex-direction: column;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  direction: ltr;
+}
+
+.term-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 30px;
+  padding-inline: 10px;
+  /* Square corners — sketch frames must have right angles (user spec) */
+  border-radius: 0;
+  background-color: #202425;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.term-dots {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.term-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+}
+
+.term-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  font-size: 10px;
+  font-weight: 600;
+  color: #8e8e8e;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.term-body {
+  position: relative;
+  border-radius: 0;
+  padding: 12px;
+  line-height: 20px;
+  color: #ffffff;
+  background-color: #0b0e13;
+  white-space: nowrap;
+  overflow: hidden;
+  /* Stretch to fill the sketch board so the bottom padding equals the top exactly */
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* =========================================================
+   Multi-line code typing loop (Freelancer.tsx)
+   Types line 1 → line 2 → line 3, holds, erases bottom-up,
+   then retypes — infinite closed loop, pure CSS.
+   ========================================================= */
+.term-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.term-line {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  min-width: 0;
+}
+
+.term-typed {
+  position: relative;
+  display: block;
+  height: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 12.5px;
+  line-height: 20px;
+}
+
+.term-typed::before {
+  content: attr(data-cmd);
+  display: block;
+  white-space: nowrap;
+}
+
+.term-typed-1 {
+  color: var(--aux-blue);
+  animation: termType1 12s steps(26) infinite;
+}
+
+.term-typed-2 {
+  color: var(--aux-amber);
+  animation: termType2 12s steps(21) infinite;
+}
+
+.term-typed-3 {
+  color: var(--aux-teal);
+  animation: termType3 12s steps(13) infinite;
+}
+
+.term-caret {
+  width: 7px;
+  height: 14px;
+  margin-inline-start: 2px;
+  background-color: var(--aux-amber);
+  flex-shrink: 0;
+  opacity: 0;
+}
+
+.term-caret-1 {
+  animation: termCaretWin1 12s steps(1) infinite,
+    termCaretBlink 0.55s step-end infinite;
+}
+
+.term-caret-2 {
+  animation: termCaretWin2 12s steps(1) infinite,
+    termCaretBlink 0.55s step-end infinite;
+}
+
+.term-caret-3 {
+  animation: termCaretWin3 12s steps(1) infinite,
+    termCaretBlink 0.55s step-end infinite;
+}
+
+@keyframes termCaretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Caret follows the currently typed line, then climbs back up during erase */
+@keyframes termCaretWin1 {
+  0%, 22% { visibility: visible; }
+  23%, 93% { visibility: hidden; }
+  94%, 100% { visibility: visible; }
+}
+
+@keyframes termCaretWin2 {
+  0%, 22% { visibility: hidden; }
+  23%, 40% { visibility: visible; }
+  41%, 87% { visibility: hidden; }
+  88%, 94% { visibility: visible; }
+  95%, 100% { visibility: hidden; }
+}
+
+@keyframes termCaretWin3 {
+  0%, 40% { visibility: hidden; }
+  41%, 88% { visibility: visible; }
+  89%, 100% { visibility: hidden; }
+}
+
+/* Closed loop: type L1 → L2 → L3 → hold → erase bottom-up → retype */
+@keyframes termType1 {
+  0%, 2% { width: 0ch; }
+  22%, 94% { width: 26ch; }
+  100% { width: 0ch; }
+}
+
+@keyframes termType2 {
+  0%, 24% { width: 0ch; }
+  40%, 88% { width: 21ch; }
+  94%, 100% { width: 0ch; }
+}
+
+@keyframes termType3 {
+  0%, 42% { width: 0ch; }
+  52%, 82% { width: 13ch; }
+  88%, 100% { width: 0ch; }
+}
+
+/* =========================================================
+   Reduced Motion — accessibility & performance safeguard
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

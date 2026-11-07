@@ -1,0 +1,10 @@
+{
+  "app": {
+    "[project]/src/app/page": [],
+    "[project]/src/app/privacy/page": [],
+    "[project]/src/app/terms/page": []
+  },
+  "appUsingSizeAdjust": true,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}
